@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t ramramaiyah/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run ramramaiyah/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t ramramaiyah/multi-client ./client
+  - docker build -t ramramaiyah/multi-nginx ./nginx
+  - docker build -t ramramaiyah/multi-server ./server
+  - docker build -t ramramaiyah/multi-worker ./worker
+  #Login to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  #Take these images and push to docker hub
+  - docker push ramramaiyah/multi-client
+  - docker push ramramaiyah/multi-nginx
+  - docker push ramramaiyah/multi-server
+  - docker push ramramaiyah/multi-worker
+
+
