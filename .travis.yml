@@ -1,6 +1,9 @@
 sudo: required
 services:
   - docker
+  
+node_js:
+- "11.10.1"
 
 before_install:
   - docker build -t ramramaiyah/react-test -f ./client/Dockerfile.dev ./client
